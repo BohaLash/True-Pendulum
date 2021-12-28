@@ -4,81 +4,83 @@ var ctx = canvas.getContext('2d')
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 
-const start = Date.now()
-const g = 9.8
-const x0 = canvas.width / 2
-const y0 = 50
+const g = 9.8 // m*s^-2
 const scale = 50
 
-var pendulums = []
-
-function get_t(zero = start) {
-    return (Date.now() - zero) / 1000
-}
+ctx.strokeStyle = 'red'
+ctx.lineWidth = 2
 
 class Pendulum {
-    constructor(l, a, f = 0, color = 'black', width = 1) {
-        this.t = Date.now()
-        this.f = f
-        this.l = l
-        this.a = a
-        this.w = Math.sqrt(g / l)
-        this.color = color
-        this.width = width
+    constructor(
+            length = 1, 
+            initial_angle = 0, 
+            initial_x = canvas.width / 2, 
+            initial_y = 100, 
+        ) {
+        this.t0 = Date.now() // ms
+
+        this.l = length // m
+        this.g_l = - g / length
+
+        this.f = initial_angle // rad
+        this.w = 0 // rad*s^-1
+        this.a = 0 // rad*s^-2
+
+        this.x0 = initial_x // px
+        this.y0 = initial_y // px
     }
 
-    get_x(t) {
-        return this.a * Math.sin(this.w * t + this.f)
+    get dt() {
+        return (Date.now() - this.t0) / 1000
     }
 
-    get_y(x) {
-        let l = this.l
-        return Math.sqrt(l * l - x * x)
+    calcul() {
+        let dt = this.dt
+
+        this.a = this.g_l * Math.sin(this.f)
+        this.w += this.a * dt
+        this.f += this.w * dt
+        
+        this.t0 = Date.now()
+    }
+
+    get x() {
+        return this.l * Math.sin(this.f)
+    }
+
+    get y() {
+        return this.l * Math.cos(this.f)
     }
 
     async render() {
         ctx.beginPath()
-        ctx.moveTo(x0, y0)
-        let t = get_t(this.t)
-        let x = this.get_x(t)
-        let y = this.get_y(x)
-        // console.log(t, x, y)
-        ctx.lineTo(x * scale + x0, y * scale + y0)
+        ctx.moveTo(this.x0, this.y0)
+
+        // console.log(this.x, this.y)
+        // console.log(this.f, this.w)
+
+        // console.log(
+        //     this.x * scale + this.x0, 
+        //     this.y * scale + this.y0,
+        // )
+
+        // console.log('---')
+
+
+        ctx.lineTo(
+            this.x * scale + this.x0, 
+            this.y * scale + this.y0,
+        )
         ctx.stroke()
-    }
-
-    static drawAll() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        pendulums.forEach((p) => {
-            ctx.strokeStyle = p.color
-            ctx.lineWidth = p.width
-            p.render()
-        })
-    }
-
-    static clear() {
-        pendulums = []
-    }
-
-    static create(length = 1, amplitude = 0, initial_state = 0, color = 'black', width = 1) {
-        pendulums.push(new Pendulum(length, amplitude, initial_state, color, width))
-    }
-
-    static create_seria(
-        length = 1, amplitude = 0,
-        initial_state_func = (i) => 0.1 * i,
-        color_func = () => 'black',
-        width_func = (i) => i + 1) {
-        for (let i = 0; i < 10; ++i)
-            pendulums.push(new Pendulum(
-                length, amplitude,
-                initial_state_func(i), color_func(i), width_func(i)))
     }
 }
 
-var interval = setInterval(() => Pendulum.drawAll(), 0);
+var pendulum = new Pendulum(5, 3, canvas.width / 2, 300)
 
-Pendulum.create_seria(10, 5, (i) => i * 0.2, (i) => {
-    let colors = ['red', 'orange', 'yelow', 'green', 'blue', 'purpure', 'black']
-    return colors[i % 7]
-})
+var interval = setInterval(() => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    pendulum.render()
+    pendulum.calcul()
+}, 0)
+
+// setTimeout(() => clearInterval(interval), 10000)
