@@ -6,6 +6,8 @@ canvas.height = window.innerHeight
 
 const g = 9.8 // m*s^-2
 const scale = 50
+const timestep = 0.0001 // s
+const timestep_ms = timestep * 1000 // ms
 
 ctx.strokeStyle = 'red'
 ctx.lineWidth = 2
@@ -31,16 +33,16 @@ class Pendulum {
     }
 
     get dt() {
-        return (Date.now() - this.t0) / 1000
+        return Date.now() - this.t0
     }
 
     calcul() {
-        let dt = this.dt
-
-        this.a = this.g_l * Math.sin(this.f)
-        this.w += this.a * dt
-        this.f += this.w * dt
-        
+        console.log(this.dt / timestep_ms)
+        for (let i = 0; i < this.dt / timestep_ms; ++i) {
+            this.a = this.g_l * Math.sin(this.f)
+            this.w += this.a * timestep
+            this.f += this.w * timestep
+        }
         this.t0 = Date.now()
     }
 
@@ -55,18 +57,6 @@ class Pendulum {
     async render() {
         ctx.beginPath()
         ctx.moveTo(this.x0, this.y0)
-
-        // console.log(this.x, this.y)
-        // console.log(this.f, this.w)
-
-        // console.log(
-        //     this.x * scale + this.x0, 
-        //     this.y * scale + this.y0,
-        // )
-
-        // console.log('---')
-
-
         ctx.lineTo(
             this.x * scale + this.x0, 
             this.y * scale + this.y0,
@@ -83,4 +73,4 @@ var interval = setInterval(() => {
     pendulum.calcul()
 }, 0)
 
-// setTimeout(() => clearInterval(interval), 10000)
+// setTimeout(() => clearInterval(interval), 5000)
