@@ -5,20 +5,18 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 
 const g = 9.8 // m*s^-2
-const scale = 50
+const scale = 300
 const timestep = 0.00001 // s
 const timestep_ms = timestep * 1000 // ms
+
+const x0 = canvas.width / 2
+const y0 = canvas.height / 2
 
 ctx.strokeStyle = 'red'
 ctx.lineWidth = 2
 
 class Pendulum {
-    constructor(
-            length = 1, 
-            initial_angle = 0, 
-            initial_x = canvas.width / 2, 
-            initial_y = 100, 
-        ) {
+    constructor(length = 1, initial_angle = 0) {
         this.t0 = Date.now() // ms
 
         this.l = length // m
@@ -27,9 +25,6 @@ class Pendulum {
         this.f = initial_angle // rad
         this.w = 0 // rad*s^-1
         this.a = 0 // rad*s^-2
-
-        this.x0 = initial_x // px
-        this.y0 = initial_y // px
     }
 
     get dt() {
@@ -56,16 +51,16 @@ class Pendulum {
 
     async render() {
         ctx.beginPath()
-        ctx.moveTo(this.x0, this.y0)
+        ctx.moveTo(x0, y0)
         ctx.lineTo(
-            this.x * scale + this.x0, 
-            this.y * scale + this.y0,
+            this.x * scale + x0, 
+            this.y * scale + y0,
         )
         ctx.stroke()
     }
 }
 
-var pendulum = new Pendulum(5, 3, canvas.width / 2, 300)
+var pendulum = new Pendulum(1, 3)
 
 var interval = setInterval(() => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
