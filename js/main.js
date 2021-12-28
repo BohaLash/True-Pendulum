@@ -6,7 +6,7 @@ canvas.height = window.innerHeight
 
 const g = 9.8 // m*s^-2
 const scale = 50
-const timestep = 0.0001 // s
+const timestep = 0.00001 // s
 const timestep_ms = timestep * 1000 // ms
 
 ctx.strokeStyle = 'red'
@@ -37,7 +37,7 @@ class Pendulum {
     }
 
     calcul() {
-        console.log(this.dt / timestep_ms)
+        // console.log(this.dt / timestep_ms)
         for (let i = 0; i < this.dt / timestep_ms; ++i) {
             this.a = this.g_l * Math.sin(this.f)
             this.w += this.a * timestep
