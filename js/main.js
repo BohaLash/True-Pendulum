@@ -19,37 +19,41 @@ ctx.strokeStyle = 'black'
 ctx.fillStyle = 'lightgray'
 ctx.lineWidth = 2
 
-var g_inpt = document.getElementById('g')
-var l_inpt = document.getElementById('l')
-var scale_inpt = document.getElementById('scale')
+function initInputs() {
+    var g_inpt = document.getElementById('g')
+    var l_inpt = document.getElementById('l')
+    var scale_inpt = document.getElementById('scale')
 
-var width_inpt = document.getElementById('width')
-var stroke_inpt = document.getElementById('stroke')
-var fill_inpt = document.getElementById('fill')
+    var width_inpt = document.getElementById('width')
+    var stroke_inpt = document.getElementById('stroke')
+    var fill_inpt = document.getElementById('fill')
 
-g_inpt.value = g
-g_inpt.onchange = () => { 
-    g = g_inpt.value
-    pendulum.g_l = - g / l
+    g_inpt.value = g
+    g_inpt.onchange = () => { 
+        g = g_inpt.value
+        pendulum.g_l = - g / l
+    }
+
+    l_inpt.value = l
+    l_inpt.onchange = () => { 
+        l = l_inpt.value
+        pendulum.l = l
+    }
+
+    scale_inpt.value = output_scale
+    scale_inpt.onchange = () => { output_scale = scale_inpt.value }
+
+    width_inpt.value = ctx.lineWidth
+    width_inpt.onchange = () => {  ctx.lineWidth = width_inpt.value }
+
+    stroke_inpt.value = ctx.strokeStyle
+    stroke_inpt.onchange = () => { ctx.strokeStyle = stroke_inpt.value }
+
+    fill_inpt.value = ctx.fillStyle
+    fill_inpt.onchange = () => { ctx.fillStyle = fill_inpt.value }
 }
 
-l_inpt.value = l
-l_inpt.onchange = () => { 
-    l = l_inpt.value
-    pendulum.l = l
-}
-
-scale_inpt.value = output_scale
-scale_inpt.onchange = () => { output_scale = scale_inpt.value }
-
-width_inpt.value = ctx.lineWidth
-width_inpt.onchange = () => {  ctx.lineWidth = width_inpt.value }
-
-stroke_inpt.value = ctx.strokeStyle
-stroke_inpt.onchange = () => { ctx.strokeStyle = stroke_inpt.value }
-
-fill_inpt.value = ctx.fillStyle
-fill_inpt.onchange = () => { ctx.fillStyle = fill_inpt.value }
+initInputs()
 
 class Pendulum {
     constructor(length = 1, initial_angle = 0) {
