@@ -6,7 +6,7 @@ canvas.height = window.innerHeight
 
 var g = 9.8 // m*s^-2
 var l = 1
-var output_scale = 300
+var output_scale = Math.round(Math.min(window.innerWidth, window.innerHeight) / 3)
 var input_scale = 100
 var timestep = 0.00001 // s
 var timestep_ms = timestep * 1000 // ms
