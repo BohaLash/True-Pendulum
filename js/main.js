@@ -63,14 +63,31 @@ class Pendulum {
         ctx.fill()
         ctx.stroke()
     }
+
+    resetTime() {
+        this.t0 = Date.now()
+    }
 }
+
+var paused = false
 
 var pendulum = new Pendulum(1, 3)
 
 var interval = setInterval(() => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    pendulum.render()
-    pendulum.calcul()
+    if (!paused) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        pendulum.render()
+        pendulum.calcul()
+    }
 }, 0)
+
+canvas.onmousedown = () => {
+    paused = true
+}
+
+canvas.onmouseup = () => {
+    paused = false
+    pendulum.resetTime()
+}
 
 // setTimeout(() => clearInterval(interval), 5000)
