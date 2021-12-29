@@ -121,11 +121,11 @@ canvas.onmouseup = (event) => {
 
     let dx = event.clientX - m_x0,
         dy = m_y0 - event.clientY,
-        v = Math.sqrt(dx*dx + dy*dy) / input_scale
+        V = Math.sqrt(dx*dx + dy*dy) / input_scale
         a = Math.atan(dx/dy) + Math.PI * (2 * (dx > 0) * (dy < 0) + (dy > 0))
-        vn = - v * Math.sin(pendulum.f + a)
+        Vn = - V * Math.sin(pendulum.f + a)
 
-    if (vn) pendulum.w += vn / pendulum.l
+    if (Vn) pendulum.w += Vn / pendulum.l
     pendulum.resetTime()
 
     paused = false
