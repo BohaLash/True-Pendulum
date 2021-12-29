@@ -119,13 +119,15 @@ var paused = false
 
 var pendulum = new Pendulum(l, 3)
 
-var interval = setInterval(() => {
+function renderLoop() {
     if (!paused) {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         pendulum.render()
         pendulum.calcul()
     }
-}, 0)
+    window.requestAnimationFrame(renderLoop)
+}
+window.requestAnimationFrame(renderLoop)
 
 var v_el = document.getElementById('v')
 var v_value = document.getElementById('v_value')
