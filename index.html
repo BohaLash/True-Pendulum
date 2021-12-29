@@ -14,19 +14,24 @@
             <div>
                 <label for="g">Gravity (g):</label>
                 <input type="number" id="g" name="g">
+                <span>m/s<sup>2</sup></span>
             </div>
             <div>
                 <label for="l">Length (l):</label>
                 <input type="number" id="l" name="l">
+                <span>m</span>
             </div>
             <div>
                 <label for="scale">Scale:</label>
                 <input type="number" id="scale" name="scale">
             </div>
         </div>
-        <h1 id="v" style="display: none;">
-            V = <span id="v_value">10</span> m/s
-        </h1>
+        <div style="text-align: center">
+            <p>Drag to add linear velocity to the pendulum bob.</p>
+            <h1 id="v" style="display: none;">
+                V = <span id="v_value">10</span> m/s
+            </h1>
+        </div>
         <div style="margin: 1em;">
             <div>
                 <label for="width">Line Width:</label>
