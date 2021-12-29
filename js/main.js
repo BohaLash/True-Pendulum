@@ -73,12 +73,12 @@ class Pendulum {
 
     calcul() {
         // console.log(this.dt / timestep_ms)
-        for (let i = 0; i < this.dt / timestep_ms; ++i) {
+        for (let i = 1; i <= this.dt / timestep_ms; ++i) {
             this.a = this.g_l * Math.sin(this.f)
             this.w += this.a * timestep
             this.f += this.w * timestep
         }
-        this.t0 = Date.now()
+        this.t0 = Date.now() - (this.dt % timestep_ms)
     }
 
     get x() {
