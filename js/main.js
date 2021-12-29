@@ -4,19 +4,52 @@ var ctx = canvas.getContext('2d')
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 
-const g = 9.8 // m*s^-2
-const output_scale = 300
-const input_scale = 100
-const timestep = 0.00001 // s
-const timestep_ms = timestep * 1000 // ms
+var g = 9.8 // m*s^-2
+var l = 1
+var output_scale = 300
+var input_scale = 100
+var timestep = 0.00001 // s
+var timestep_ms = timestep * 1000 // ms
 
 const x0 = canvas.width / 2
 const y0 = canvas.height / 2
 
-const r = 10
+const bob_r = 10
 ctx.strokeStyle = 'black'
-ctx.fillStyle = 'lightgray';
+ctx.fillStyle = 'lightgray'
 ctx.lineWidth = 2
+
+var g_inpt = document.getElementById('g')
+var l_inpt = document.getElementById('l')
+var scale_inpt = document.getElementById('scale')
+
+var width_inpt = document.getElementById('width')
+var stroke_inpt = document.getElementById('stroke')
+var fill_inpt = document.getElementById('fill')
+
+g_inpt.value = g
+g_inpt.onchange = () => { 
+    g = g_inpt.value
+    pendulum.g_l = - g / l
+}
+
+l_inpt.value = l
+l_inpt.onchange = () => { 
+    l = l_inpt.value
+    pendulum.l = l
+}
+
+scale_inpt.value = output_scale
+scale_inpt.onchange = () => { output_scale = scale_inpt.value }
+
+width_inpt.value = ctx.lineWidth
+width_inpt.onchange = () => {  ctx.lineWidth = width_inpt.value }
+
+stroke_inpt.value = ctx.strokeStyle
+stroke_inpt.onchange = () => { ctx.strokeStyle = stroke_inpt.value }
+
+fill_inpt.value = ctx.fillStyle
+fill_inpt.onchange = () => { ctx.fillStyle = fill_inpt.value }
 
 class Pendulum {
     constructor(length = 1, initial_angle = 0) {
@@ -60,7 +93,7 @@ class Pendulum {
         ctx.lineTo(x, y)
         ctx.stroke()
         ctx.beginPath()
-        ctx.arc(x, y, r, 0, 2 * Math.PI, false)
+        ctx.arc(x, y, bob_r, 0, 2 * Math.PI, false)
         ctx.fill()
         ctx.stroke()
     }
@@ -80,7 +113,7 @@ class Pendulum {
 
 var paused = false
 
-var pendulum = new Pendulum(1, 3)
+var pendulum = new Pendulum(l, 3)
 
 var interval = setInterval(() => {
     if (!paused) {
@@ -90,11 +123,14 @@ var interval = setInterval(() => {
     }
 }, 0)
 
+var v_el = document.getElementById('v')
+var v_value = document.getElementById('v_value')
 var m_x0, m_y0
 var p_x, p_y
 
 canvas.onmousedown = (event) => {
     paused = true
+    v_el.style.display = ''
 
     m_x0 = event.clientX
     m_y0 = event.clientY
@@ -113,6 +149,8 @@ canvas.onmousedown = (event) => {
         ctx.moveTo(p_x, p_y)
         ctx.lineTo(p_x + dx * 0.5, p_y + dy * 0.5)
         ctx.stroke()
+
+        v_value.innerText = (Math.sqrt(dx*dx + dy*dy) / input_scale).toPrecision(3)
     }
 }
 
@@ -128,6 +166,7 @@ canvas.onmouseup = (event) => {
     if (Vn) pendulum.w += Vn / pendulum.l
     pendulum.resetTime()
 
+    v_el.style.display = 'none'
     paused = false
 }
 
