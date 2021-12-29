@@ -5,7 +5,8 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 
 const g = 9.8 // m*s^-2
-const scale = 300
+const output_scale = 300
+const input_scale = 100
 const timestep = 0.00001 // s
 const timestep_ms = timestep * 1000 // ms
 
@@ -52,8 +53,8 @@ class Pendulum {
     }
 
     async render() {
-        let x = this.x * scale + x0, 
-            y = this.y * scale + y0
+        let x = this.canvas_x, 
+            y = this.canvas_y
         ctx.beginPath()
         ctx.moveTo(x0, y0)
         ctx.lineTo(x, y)
@@ -62,6 +63,14 @@ class Pendulum {
         ctx.arc(x, y, r, 0, 2 * Math.PI, false)
         ctx.fill()
         ctx.stroke()
+    }
+
+    get canvas_x() {
+        return this.x * output_scale + x0
+    }
+
+    get canvas_y() {
+        return this.y * output_scale + y0
     }
 
     resetTime() {
@@ -81,13 +90,45 @@ var interval = setInterval(() => {
     }
 }, 0)
 
-canvas.onmousedown = () => {
+var m_x0, m_y0
+var p_x, p_y
+
+canvas.onmousedown = (event) => {
     paused = true
+
+    m_x0 = event.clientX
+    m_y0 = event.clientY
+
+    p_x = pendulum.canvas_x
+    p_y = pendulum.canvas_y
+
+    canvas.onmousemove = (event) => {
+        let dx = event.clientX - m_x0,
+            dy = event.clientY - m_y0
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        pendulum.render()
+        
+        ctx.beginPath();
+        ctx.moveTo(p_x, p_y)
+        ctx.lineTo(p_x + dx * 0.5, p_y + dy * 0.5)
+        ctx.stroke()
+    }
 }
 
-canvas.onmouseup = () => {
-    paused = false
+canvas.onmouseup = (event) => {
+    canvas.onmousemove = undefined
+
+    let dx = event.clientX - m_x0,
+        dy = m_y0 - event.clientY,
+        v = Math.sqrt(dx*dx + dy*dy) / input_scale
+        a = Math.atan(dx/dy) + Math.PI * (2 * (dx > 0) * (dy < 0) + (dy > 0))
+        vn = - v * Math.sin(pendulum.f + a)
+
+    if (vn) pendulum.w += vn / pendulum.l
     pendulum.resetTime()
+
+    paused = false
 }
 
 // setTimeout(() => clearInterval(interval), 5000)
