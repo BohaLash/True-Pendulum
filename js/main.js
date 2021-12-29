@@ -12,7 +12,9 @@ const timestep_ms = timestep * 1000 // ms
 const x0 = canvas.width / 2
 const y0 = canvas.height / 2
 
-ctx.strokeStyle = 'red'
+const r = 10
+ctx.strokeStyle = 'black'
+ctx.fillStyle = 'lightgray';
 ctx.lineWidth = 2
 
 class Pendulum {
@@ -50,12 +52,15 @@ class Pendulum {
     }
 
     async render() {
+        let x = this.x * scale + x0, 
+            y = this.y * scale + y0
         ctx.beginPath()
         ctx.moveTo(x0, y0)
-        ctx.lineTo(
-            this.x * scale + x0, 
-            this.y * scale + y0,
-        )
+        ctx.lineTo(x, y)
+        ctx.stroke()
+        ctx.beginPath()
+        ctx.arc(x, y, r, 0, 2 * Math.PI, false)
+        ctx.fill()
         ctx.stroke()
     }
 }
